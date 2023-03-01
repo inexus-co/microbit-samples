@@ -28,11 +28,15 @@ DEALINGS IN THE SOFTWARE.
 
 MicroBit uBit;
 MicroBitUARTService *uart;
+MicroBitThermometer thermometer;
 
 int connected = 0;
 
-ManagedString DISPLAY("display");
 const char *space = " ";
+
+ManagedString DISPLAY("DISPLAY");
+ManagedString TEMP("TEMP");
+
 
 void onConnected(MicroBitEvent)
 {
@@ -50,6 +54,9 @@ void onConnected(MicroBitEvent)
 
                 if(command == DISPLAY) {
                     uBit.display.scroll(data);
+                } else if (command == TEMP) {
+                    int temperature = thermometer.getTemperature();
+                    uBit.display.scroll(temperature);
                 } else {
                     uBit.display.scroll(msg);
                 }
@@ -62,7 +69,7 @@ void onConnected(MicroBitEvent)
 
 void onDisconnected(MicroBitEvent)
 {
-    uBit.display.scroll("D");
+    uBit.display.print("D");
     connected = 0;
 }
 
@@ -74,6 +81,7 @@ int main()
     uBit.messageBus.listen(MICROBIT_ID_BLE, MICROBIT_BLE_EVT_DISCONNECTED, onDisconnected);
 
     uart = new MicroBitUARTService(*uBit.ble, 32, 32);
+    uBit.display.print("O");
 
     release_fiber();
 }
