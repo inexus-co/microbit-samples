@@ -37,27 +37,34 @@ const char *space = " ";
 ManagedString DISPLAY("DISPLAY");
 ManagedString TEMP("TEMP");
 
-
 void onConnected(MicroBitEvent)
 {
     connected = 1;
 
     ManagedString eom(";");
 
-    while(connected == 1) {
+    while (connected == 1)
+    {
         ManagedString msg = uart->readUntil(eom);
         int length = msg.length();
-        for(int i = 0; i < length; ++i) {
-            if(msg.charAt(i) == *space){
+        for (int i = 0; i < length; ++i)
+        {
+            if (msg.charAt(i) == *space)
+            {
                 ManagedString command = msg.substring(0, i);
                 ManagedString data = msg.substring(i, length - 1);
 
-                if(command == DISPLAY) {
+                if (command == DISPLAY)
+                {
                     uBit.display.scroll(data);
-                } else if (command == TEMP) {
+                }
+                else if (command == TEMP)
+                {
                     int temperature = thermometer.getTemperature();
                     uBit.display.scroll(temperature);
-                } else {
+                }
+                else
+                {
                     uBit.display.scroll(msg);
                 }
 
@@ -85,4 +92,3 @@ int main()
 
     release_fiber();
 }
-
